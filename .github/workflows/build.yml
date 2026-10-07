@@ -18,30 +18,27 @@ jobs:
           java-version: '17'
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android SDK
-        run: |
-          yes | sdkmanager --licenses || true
-          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+        uses: android-actions/setup-android@v4
+        with:
+          accept-android-sdk-licenses: true
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
 
       - name: Extract Tapasya project
         run: |
-          ZIP_FILE=$(find . -maxdepth 1 -type f -iname "*.zip" | head -1)
+          ZIP_FILE=$(find . -maxdepth 1 -type f -name "*.zip" | head -1)
           echo "Using ZIP: $ZIP_FILE"
           unzip -q "$ZIP_FILE" -d source
 
       - name: Find and build Android project
         run: |
           PROJECT_DIR=$(dirname "$(find source -type f -name gradlew | head -1)")
-          echo "Project directory: $PROJECT_DIR"
-
+          echo "Project: $PROJECT_DIR"
           cd "$PROJECT_DIR"
           chmod +x gradlew
           ./gradlew assembleDebug
 
           APK=$(find app/build/outputs/apk/debug -type f -name "*.apk" | head -1)
-          echo "APK found: $APK"
+          echo "APK Found: $APK"
           cp "$APK" "$GITHUB_WORKSPACE/app-debug.apk"
 
       - name: Upload APK
