@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="tapasya_primary">#C5A7FF</color>
+    <color name="tapasya_on_primary">#21123E</color>
+    <color name="tapasya_secondary">#83D6C1</color>
+    <color name="tapasya_background">#111019</color>
+    <color name="tapasya_surface">#1B1925</color>
+    <color name="tapasya_surface_variant">#272431</color>
+    <color name="tapasya_text">#F3F0FA</color>
+    <color name="tapasya_muted">#B7B0C4</color>
+    <color name="tapasya_error">#FFB4AB</color>
+    <color name="tapasya_outline">#494453</color>
+</resources>
