@@ -1,7 +1,10 @@
-name: Build Tapasya APK
+name: Prepare and Build Ekavo
 
 on:
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -23,26 +26,41 @@ jobs:
           accept-android-sdk-licenses: true
           packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
 
-      - name: Extract Tapasya project
+      - name: Extract Android project
         run: |
           ZIP_FILE=$(find . -maxdepth 1 -type f -name "*.zip" | head -1)
           echo "Using ZIP: $ZIP_FILE"
-          unzip -q "$ZIP_FILE" -d source
+          rm -rf extracted
+          mkdir extracted
+          unzip -q "$ZIP_FILE" -d extracted
 
-      - name: Find and build Android project
+      - name: Copy project files to repository
         run: |
-          PROJECT_DIR=$(dirname "$(find source -type f -name gradlew | head -1)")
-          echo "Project: $PROJECT_DIR"
-          cd "$PROJECT_DIR"
+          PROJECT_DIR=$(dirname "$(find extracted -type f -name gradlew | head -1)")
+          echo "Project directory: $PROJECT_DIR"
+
+          cp -a "$PROJECT_DIR"/. ./
+
+          rm -rf extracted
+
+      - name: Save project files to GitHub
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -A
+
+          git diff --cached --quiet || git commit -m "Add Ekavo Android project source"
+
+          git push
+
+      - name: Build Debug APK
+        run: |
           chmod +x gradlew
           ./gradlew assembleDebug
-
-          APK=$(find app/build/outputs/apk/debug -type f -name "*.apk" | head -1)
-          echo "APK Found: $APK"
-          cp "$APK" "$GITHUB_WORKSPACE/app-debug.apk"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Tapasya-debug-APK
-          path: app-debug.apk
+          name: Ekavo-debug-APK
+          path: app/build/outputs/apk/debug/*.apk
