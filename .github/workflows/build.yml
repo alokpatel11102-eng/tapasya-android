@@ -38,23 +38,53 @@ jobs:
         run: |
           PROJECT_DIR=$(dirname "$(find extracted -type f -name gradlew | head -1)")
           echo "Project directory: $PROJECT_DIR"
-          cp -a "$PROJECT_DIR/." .
+          cp -a "$PROJECT_DIR/." ./
+          rm -rf extracted
 
       - name: Save project files to GitHub
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "41998282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git diff --cached --quiet || git commit -m "Add Ekavo Android project source"
+          git diff --cached --quiet || git commit -m "Update Ekavo Android project source"
           git push
 
-      - name: Build Debug APK
+      - name: Create release keystore
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          keytool -genkeypair -v \
+            -keystore "$GITHUB_WORKSPACE/tapasya-upload.jks" \
+            -alias tapasya-upload \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass "$KEYSTORE_PASSWORD" \
+            -keypass "$KEY_PASSWORD" \
+            -dname "CN=Tapasya, OU=Mobile, O=Tapasya, L=India, ST=Bihar, C=IN"
+
+      - name: Build signed Release AAB
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug
 
-      - name: Upload APK
+          ./gradlew bundleRelease \
+            -Pandroid.injected.signing.store.file="$GITHUB_WORKSPACE/tapasya-upload.jks" \
+            -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
+            -Pandroid.injected.signing.key.alias="tapasya-upload" \
+            -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
+
+      - name: Upload Release AAB
         uses: actions/upload-artifact@v4
         with:
-          name: Ekavo-debug-APK
-          path: app/build/outputs/apk/debug/*.apk
+          name: Tapasya-release-AAB
+          path: app/build/outputs/bundle/release/*.aab
+
+      - name: Upload Upload Keystore
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tapasya-upload-keystore
+          path: tapasya-upload.jks
