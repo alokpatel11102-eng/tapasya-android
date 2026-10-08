@@ -1,33 +1,16 @@
-
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="48dp"
     android:height="48dp"
     android:viewportWidth="48"
     android:viewportHeight="48">
-
-    <!-- Dark rounded background -->
     <path
-        android:fillColor="#101522"
-        android:pathData="M8,0 L40,0 Q48,0 48,8 L48,40 Q48,48 40,48 L8,48 Q0,48 0,40 L0,8 Q0,0 8,0 Z" />
-
-    <!-- Flame -->
+        android:fillColor="#21123E"
+        android:pathData="M24,2A22,22 0,1 0,24 46A22,22 0,1 0,24 2" />
     <path
-        android:fillColor="#FF9F1C"
-        android:pathData="M24,5 C21,9 20,11 21,14 C18,12 18,9 19,7 C14,11 13,15 15,18 C17,21 21,22 24,22 C29,22 32,19 31,15 C30,11 27,8 24,5 Z" />
-
-    <!-- T -->
+        android:fillColor="#C5A7FF"
+        android:pathData="M13,14h22v4H13zM22,18h4v16h-4z" />
     <path
-        android:fillColor="#EAF6FF"
-        android:pathData="M11,22 L37,22 L37,28 L28,28 L28,42 L20,42 L20,28 L11,28 Z" />
-
-    <!-- Open book -->
-    <path
-        android:fillColor="#7DD3FC"
-        android:pathData="M9,32 C13,30 17,31 23,34 L23,43 C17,40 13,39 9,41 Z" />
-
-    <path
-        android:fillColor="#7DD3FC"
-        android:pathData="M39,32 C35,30 31,31 25,34 L25,43 C31,40 35,39 39,41 Z" />
-
+        android:fillColor="#83D6C1"
+        android:pathData="M16,34h16v3H16z" />
 </vector>
